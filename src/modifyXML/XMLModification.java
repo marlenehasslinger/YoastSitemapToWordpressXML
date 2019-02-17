@@ -52,34 +52,34 @@ public static void main(String[] args) {
 		String siteMapStringLean = sitemap.replaceAll("</loc>", "").replaceAll("<loc>", "").replaceAll("</lastmod>", "").replaceAll("</url>", "").replaceAll("<lastmod>", "<url>").replaceAll("\\n", "").replaceAll("\\s", "").replaceAll("\\r", "");
 		ArrayList<String> urlArray = getUrlArray(siteMapStringLean);
 		ArrayList<String> titleArray = getTitles(urlArray);
-		StringBuffer xmlposts = new StringBuffer("");
+		StringBuffer xmlPosts = new StringBuffer("");
 		
 		// Generate XML file that contains all posts by placing data from sitemap in item template and filling items into StringBuffer xmlposts
 		for(int i = 0; i<urlArray.size(); i++) {
 			String numberAsString = String.valueOf(i);
 			String u = item.replace("#1", titleArray.get(i)).replace("#2", urlArray.get(i)).replace("#3", urlArray.get(i)).replace("#4", numberAsString);
-			xmlposts.append(u);
+			xmlPosts.append(u);
 		}
 		
-		System.out.println(xmlposts);
+		System.out.println(xmlPosts);
 
 	}
 
 	// Generates titles from urls in urlArray and saves them in a new Array
 	public static ArrayList<String> getTitles(ArrayList<String> urlArray) {
-		
 		ArrayList<String> titleArray = new ArrayList<String>();
 		
 		for(String url : urlArray) {
 			String s = url.replace("https://www.domain.de/", "").replace("/", "").replace("-"," ");
-			titleArray.add(s);
+			String titleCaseString = convertToTitleCaseIteratingChars(s);
+			titleArray.add(titleCaseString);
 		}
+		
 		return titleArray;
 	}
 	
 	// Generates array that only contains URLs and not last modified dates
 	public static ArrayList<String> getUrlArray(String sitemap){
-		
 		ArrayList<String> urlArray = new ArrayList();
 		String[] sitemapItemArray = sitemap.split("<url>");	
 		
@@ -88,7 +88,31 @@ public static void main(String[] args) {
 				urlArray.add(sitemapItemArray[i]);
 			}
 		}
+		
 		return urlArray;
+	}
+	
+	public static String convertToTitleCaseIteratingChars(String text) {
+	    if (text == null || text.isEmpty()) {
+	        return text;
+	    }
+	 
+	    StringBuilder converted = new StringBuilder();
+	 
+	    boolean convertNext = true;
+	    for (char ch : text.toCharArray()) {
+	        if (Character.isSpaceChar(ch)) {
+	            convertNext = true;
+	        } else if (convertNext) {
+	            ch = Character.toTitleCase(ch);
+	            convertNext = false;
+	        } else {
+	            ch = Character.toLowerCase(ch);
+	        }
+	        converted.append(ch);
+	    }
+	 
+	    return converted.toString();
 	}
 	
 }
