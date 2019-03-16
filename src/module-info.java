@@ -6,4 +6,5 @@
  *
  */
 module modifyXML {
+	requires java.desktop;
 }
